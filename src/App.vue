@@ -5,6 +5,8 @@
 <template>
   <div>
     <HospitalTop></HospitalTop>
+    <router-view></router-view>
+    <HospitalBottom></HospitalBottom>
   </div>
 
 </template>

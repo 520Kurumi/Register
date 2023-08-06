@@ -19,6 +19,7 @@
     </div>
 
 </div>    
+    <div class="ocuupy"></div>
 </template>
 
 <style scoped lang="scss">
@@ -27,8 +28,9 @@
     height: 70px;
     background-color: #fff;
     border-bottom: 1px solid #e4dede;
+    position: fixed;
+    top:0;
     .container{
-        position: fixed;
         width: 100vw;
         height: 70px;
         display: flex;
@@ -73,14 +75,16 @@
                 white-space: nowrap;
                 cursor: pointer;
             }
+            span:hover{
+                color: #4490f1;
+            }
         }
     }
-    .nav::after{
-        content: '';
-        display: block;
-        width: 100vw;
-        height: 70px;
-    }   
+
 }
+  .ocuupy{
+    width: 100vw;
+    height: 70px;
+  }
 
 </style>
