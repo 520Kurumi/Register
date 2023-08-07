@@ -18,13 +18,7 @@ img{
   height: 350px;
   width: 1200px;
 }
-// .all{
-//   height: 350px;
-//   width: 1200px;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// }
+
 :deep(.el-carousel){
   height: 350px;
   width: 1200px;

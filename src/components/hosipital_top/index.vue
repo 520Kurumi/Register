@@ -6,7 +6,7 @@
 <div class="nav">
     <div class="container">
         <div class="wraper">
-            <div class="head">
+            <div class="head" @click="$router.push('/home')">
                 <img src="../../assets/images/logo.png">
                 <span>好大夫 预约挂号统一平台</span>
             </div>
@@ -24,6 +24,7 @@
 
 <style scoped lang="scss">
 .nav{
+    z-index: 2;
     width: 100vw;
     height: 70px;
     background-color: #fff;
@@ -48,6 +49,7 @@
                 line-height:50px;
                 height: 50px;
                 width: 320px;
+                cursor: pointer;
                 img{
                     width: 50px;
                     height: 50px;

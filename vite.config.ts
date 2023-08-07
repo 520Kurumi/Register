@@ -8,5 +8,14 @@ export default defineConfig({
   alias: {
    "@": path.resolve(__dirname, 'src')
   }
- }
+ },
+   //配置代理跨域
+   server: {
+        proxy: {
+        '/api': {
+            target: 'http://syt.atguigu.cn',
+            changeOrigin: true,
+        },
+        }
+    }
 })
