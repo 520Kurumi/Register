@@ -4,6 +4,7 @@ import Search from '@/views/home/Search.vue'
 import Level  from  '@/views/home/Level.vue'
 import Region from '@/views/home/Region.vue'
 import Card from '@/views/home/Card.vue'
+import Tip from '@/views/home/Tip.vue'
 import {ref,onMounted} from 'vue'
 import {getHospitalHome} from '@/api/home/index'
 import {Content} from '@/api/home/type'  //导入类型声明
@@ -82,7 +83,9 @@ const selectRegion=(value:string)=>{
                 </div>
             </div>
 
-            <div class="right"></div>
+            <div class="right">
+              <Tip></Tip>
+            </div>
         </div>
     </div>
 </template>
@@ -97,6 +100,7 @@ const selectRegion=(value:string)=>{
   .content{
      margin-top: 22px;
      min-width: 1200px;
+     display: flex;
      .left{
         width: 1000px;
         .title{
@@ -124,6 +128,7 @@ const selectRegion=(value:string)=>{
      }
 
      .right{
+      margin-top: 70px;
         width: 200px;
      }
   }
