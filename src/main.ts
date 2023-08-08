@@ -7,7 +7,7 @@ import router from '@/router'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
-
+import pinia from '@/store/index'
 const app=createApp(App)
 app.component('HospitalTop', HospitalTop)
 app.component('HospitalBottom', HospitalBottom)
@@ -15,4 +15,5 @@ app.use(router)
 app.use(ElementPlus,{
     locale: zhCn
 })
+app.use(pinia)
 app.mount('#app')

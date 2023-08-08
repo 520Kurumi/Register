@@ -11,7 +11,7 @@ import {Content} from '@/api/home/type'  //导入类型声明
 const currentPage=ref<number>(1)
 const pageSize=ref<number>(15)
 const total=ref<number>(0)
-const hosHomeList=ref<Content>([])
+const hosHomeList=ref<Content>()
 const hostype=ref<string>('')
 const districtCode=ref<string>('')
 onMounted(() => {
@@ -21,7 +21,7 @@ const getHospitalHomeRes=async()=>{
  const res=await getHospitalHome(currentPage.value,pageSize.value,hostype.value,districtCode.value)
  hosHomeList.value=res.data.data.content
  total.value=res.data.data.totalElements
-//  console.log(res.data)
+//  console.log(hosHomeList.value)
 }
 
 const handleSizeChange=(now:number)=>{
@@ -67,7 +67,9 @@ const selectRegion=(value:string)=>{
                    :releaseTime="item.bookingRule.releaseTime"
                    :hostypeString="item.param.hostypeString"
                    :imgSrc="item.logoData"
-                  :key="item.id"></Card>
+                   :key="item.id"
+                   :hoscode="item.hoscode"
+                   ></Card>
 
                   <el-pagination
                     v-model:current-page="currentPage"

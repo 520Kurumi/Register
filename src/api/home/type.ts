@@ -77,7 +77,8 @@ export type renderHosHomeData={  //用于渲染home页数据
     "hosname": string,//
     "releaseTime": string,//
     "hostypeString": string,//
-    "imgSrc":string
+    "imgSrc":string,
+    "hoscode":string
 }
 
 
@@ -110,5 +111,11 @@ export interface SearchHospitalData extends ResponseData{
     data:{
         data:Content
     }
-    
+}
+
+
+//搜索框点击传递的类型
+export interface clickSearchData{
+    value:string,
+    hoscode:string
 }

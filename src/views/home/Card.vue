@@ -1,11 +1,22 @@
 <script setup lang="ts">
 import {renderHosHomeData} from '@/api/home/type'
-defineProps<renderHosHomeData>()
+import {useRouter} from 'vue-router'
+const res:renderHosHomeData=defineProps<renderHosHomeData>()
+const $router=useRouter()
+// console.log(res.hoscode)
+const goDetail=(hoscode:string)=>{
+    // console.log(hoscode)
+    $router.push({
+       path: '/hospital',
+        query:{
+            hoscode
+        }
+    })
+}
 </script>
 
 <template>
-    <el-card class="box-card" shadow="hover">
-
+    <el-card class="box-card" shadow="hover" @click="goDetail(res.hoscode)">
       <div class="content">
             <div class="left">
                 <div class="hospital-title">{{hosname}}</div>
@@ -36,6 +47,7 @@ defineProps<renderHosHomeData>()
         width: 440px;
         height: 110px;
         margin:  5px 1px;
+        cursor: pointer;
         .content{
             display: flex;
             .left{

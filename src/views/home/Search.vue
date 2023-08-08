@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Search} from '@element-plus/icons-vue'
-import {SearchHospitalData,Hospital} from '@/api/home/type'
+import {SearchHospitalData,Hospital,clickSearchData} from '@/api/home/type'
 import {ref} from 'vue'
 import {getSearchHospital} from '@/api/home/index'
 import { useRouter } from 'vue-router'
@@ -21,9 +21,14 @@ const querySearch=async(value:string,cb:any)=>{
    cb(searchList)
 }
 
-const handleSelect=(item:any)=>{
-  console.log(item)
-  $router.push('/hospital')
+const handleSelect=(item:clickSearchData)=>{
+  // console.log(item)
+  $router.push({
+    path:'/hospital',
+    query:{
+      hoscode:item.hoscode
+    }
+  })
 }
 </script>
 
