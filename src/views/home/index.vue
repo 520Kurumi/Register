@@ -98,7 +98,7 @@ const selectRegion=(value:string)=>{
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
- 
+
   .content{
      margin-top: 22px;
      min-width: 1200px;

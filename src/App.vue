@@ -7,6 +7,7 @@
     <HospitalTop></HospitalTop>
     <router-view></router-view>
     <HospitalBottom></HospitalBottom>
+    <Login></Login>
   </div>
 
 </template>

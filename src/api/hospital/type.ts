@@ -42,5 +42,23 @@ export interface HospitalTotalData extends ResponseData{
             "bookingRule":HospitalBookingRule,
             "hospital":HospitalDetailInfo
         }
+}
 
+//科室数据类型
+export interface HospitalDepartment{
+  "depcode": string,
+  "depname": string,
+  "children": HospitalDepartment[]
+}
+
+export type HospitalDepartmentArr=HospitalDepartment[]
+
+
+export interface HospitalDepartmentResponseData extends ResponseData{
+   data:{
+      "code": number,
+      "message": string,
+      "ok": boolean,
+      data:HospitalDepartmentArr
+   }
 }

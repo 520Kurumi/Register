@@ -1,8 +1,21 @@
 <script setup lang="ts">
+import {ref} from 'vue'
 import {useHospitalDetailStore} from '@/store/hospital/hospitalDetail'
 import {storeToRefs} from 'pinia'
 const hospitalDetail=useHospitalDetailStore()
-const {hospitalDetailInfo}=storeToRefs(hospitalDetail)
+const {hospitalDetailInfo,hospitalDepartment}=storeToRefs(hospitalDetail)
+const currentIndex=ref<number>(0)
+const name=ref([])
+const selectDepart=(index:number)=>{
+  currentIndex.value=index
+  // console.log(name.value[0])
+  const dom=name.value[index] as HTMLLIElement
+   dom.scrollIntoView({
+     behavior:'smooth',
+     block:'start'
+   })
+}
+
 </script>
 
 <template>
@@ -33,6 +46,23 @@ const {hospitalDetailInfo}=storeToRefs(hospitalDetail)
                 <li  class="common">{{ item}}</li>
 
              </ol>
+        </div>
+    </div>
+<h2 v-if="hospitalDepartment">选择科室</h2>
+    <div class="bottom" v-if="hospitalDepartment">
+        
+        <div class="bottom-left">
+           <ul>
+              <li v-for="(item,index) in hospitalDepartment" :class="{active:currentIndex===index}" @click="selectDepart(index)">{{ item.depname }}</li>
+           </ul>
+        </div>
+        <div class="bottom-right">
+              <div class="detailDepart" v-for="item in hospitalDepartment" >
+                      <h2 ref="name">{{ item.depname }}</h2>
+                      <ul>
+                         <li v-for="detail in item.children">{{ detail.depname }}</li>
+                      </ul>
+              </div>
         </div>
     </div>
 
@@ -103,6 +133,79 @@ const {hospitalDetailInfo}=storeToRefs(hospitalDetail)
           font-size: 12px;
           color: #999;
           line-height: 12px;
+        }
+      }
+    }
+  }
+    h2{
+      color: #333;
+      font-size: 16px;
+      font-weight: 700;
+      margin: 10px 30px;
+    }
+  .bottom{
+    width: 1000px;
+    display: flex;
+
+    .bottom-left{
+      width: 170px;
+      ul{
+        background: #f4f9ff;
+        width: 170px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      li{
+        width: 100%;
+        background: #f4f9ff;
+        font-size: 14px;
+        color:#333;
+        margin: 2px 0;
+        text-align: center;
+        height: 40px;
+        line-height:40px;
+        cursor: pointer;
+        &.active{
+          background-color: #fff;
+          font-size: 16px;
+          font-weight: 700;
+          border-left: 1px red solid;
+        }
+      }
+    }
+
+    .bottom-right{
+      width: 780px;
+      height: 600px;
+      overflow-y: auto;
+      &::-webkit-scrollbar{
+        display: none;
+      }
+      .detailDepart{
+        display: flex;
+        flex-wrap: wrap;
+        width: 780px;
+        margin: 0 0 20px 30px;
+        h2{
+          width: 100%;
+        }
+        ul{
+          display: flex;
+          flex-wrap: wrap;
+          // justify-content: space-around;
+          li{
+            font-size: 14px;
+            color:#666;
+            margin-right: 40px;
+            margin-top: 5px;
+            width: 200px;
+            height: 20px;
+            line-height: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
         }
       }
     }

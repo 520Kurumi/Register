@@ -10,6 +10,7 @@ const $router=useRouter()
 const hospitalDetail=useHospitalDetailStore()
 onMounted( ()=>{
     hospitalDetail.getHospitalDetailAction($route.query.hoscode as string)
+    hospitalDetail.getHospitalDepartmentAction($route.query.hoscode as string)
 })
 const changeActive=(path:string)=>{
     // console.log(path)
@@ -75,6 +76,7 @@ const changeActive=(path:string)=>{
 
 <style scoped lang="scss">
 .main{
+    height: 100vh;
     .showHosInfo{
         display: flex;
         margin: 20px auto 20px 20px;

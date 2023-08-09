@@ -1,5 +1,6 @@
 <script setup lang="ts">
-
+import {useUserStore} from '@/store/user/user'
+const user=useUserStore()
 </script>
 
 <template>
@@ -14,7 +15,7 @@
         </div>
         <div class="main">
             <span>帮助中心</span>
-            <span>登录/注册</span>
+            <span @click="user.isVisable=true">登录/注册</span>
         </div>
     </div>
 
