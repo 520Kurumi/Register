@@ -1,9 +1,89 @@
 <script setup lang="ts">
 import {useUserStore} from '@/store/user/user'
-import {ref} from 'vue'
+import {ref, reactive, computed} from 'vue'
 import {User,Lock} from '@element-plus/icons-vue'
+import type {  FormRules } from 'element-plus'
+import { ElMessage } from 'element-plus'
 const user=useUserStore()
-const login=ref<boolean>(true)
+const isLogin=ref<boolean>(true)
+const isGetCode=ref<boolean>(true)
+const loginForm=ref<HTMLFormElement>()
+const count=ref<number>(0)
+const loginInfo=reactive({
+    phone:'',
+    code:''
+})
+
+
+const isRight =computed(()=>{
+    if(/^1[3-9]\d{9}$/.test(loginInfo.phone)){
+        return true
+    }
+    return false
+})
+const getCode= async ()=>{
+
+
+    try{
+       await user.getPhoneCodeAction(loginInfo.phone)
+    }catch(err){
+        ElMessage.error('错误，获取验证码失败')
+    }finally{
+         loginInfo.code=user.phoneCode
+    }
+
+    count.value=5;
+    isGetCode.value=false
+    const timer=setInterval(()=>{
+        count.value--;
+        if(count.value<=0){
+            isGetCode.value=true
+            clearInterval(timer)
+        }
+    },1000)
+}
+const validatorPhone=(_rule:any, value:string, callback:Function)=>{
+    // console.log(rule)
+    const reg=/^1[3-9]\d{9}$/
+    if(reg.test(value)){
+        return callback()
+    }
+   return new Error('请输入正确的手机号') 
+
+}
+const rules=reactive<FormRules<typeof loginInfo>>({
+    phone:[
+        { required: true, message: '手机号不能为空', trigger: 'blur' },
+    {
+      validator:validatorPhone, trigger: 'change'
+    }],
+    code:[{
+        required: true, message: '验证码不能为空', trigger: 'blur' 
+    }]
+})
+
+const submit=()=>{
+    if((isRight.value ===false)||(loginInfo.code.length<6)){
+        return
+    }
+
+    loginForm?.value?.validate(async(isValid:boolean, invalidFields:[])=>{
+        if(isValid){
+            try {
+             await  user.postUserLoginAction(loginInfo)                
+            } catch (error) {
+                ElMessage.error('错误，获取验证码失败')
+            }finally{
+                console.log(user.nameAndToken)
+            }
+
+            console.log('通过验证')
+        }else{
+            console.log('未通过',invalidFields)
+        }
+    })
+
+}
 </script>
 
 <template>
@@ -14,28 +94,32 @@ const login=ref<boolean>(true)
          align-center
         >
         <el-row>
-            <el-col :span="12" v-show="login">
+            <el-col :span="12" v-show="isLogin">
                 <div class="left">
                         <div class="login-phone">
                             <div class="login-form">
-                             <el-form>
-                                  <el-form-item>
-                                      <el-input placeholder="请你输入手机号码" style="width: 400px" :prefix-icon="User"></el-input>
+                             <el-form :model="loginInfo" :rules="rules"  ref="loginForm">
+                                  <el-form-item label="手机号" prop="phone" error>
+                                      <el-input placeholder="请输入手机号码"  v-model="loginInfo.phone" maxlength="11" style="width: 400px" :prefix-icon="User"></el-input>
+                                  </el-form-item>
+                                  <el-form-item label="验证码" prop="code">
+                                      <el-input placeholder="请输入手机验证码" v-model="loginInfo.code" maxlength="6" style="width: 180px" :prefix-icon="Lock"></el-input>
                                   </el-form-item>
                                   <el-form-item>
-                                      <el-input placeholder="请你输入手机验证码" style="width: 400px" :prefix-icon="Lock"></el-input>
+                                  <el-button type="primary" v-show="count<=0" :disabled="(isGetCode&&isRight)?false:true" @click="getCode">获取验证码</el-button>
+                                  <el-button type="primary" v-show="count>0" :disabled="true">获取验证码({{ count }})</el-button>
                                   </el-form-item>
-                                  <el-button>获取验证码</el-button>
+
                              </el-form>                           
                         </div>
-                         <el-button type="primary" style="width: 90%">用户登录</el-button>
-                         <span @click="login=false">微信扫码登录</span>
-                         <svg @click="login=false" t="1691576674864" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4068" width="32" height="32"><path d="M183.379592 699.559184c-4.179592 0-8.359184-1.044898-11.493878-3.657143-6.269388-4.702041-9.404082-12.016327-7.836734-19.330612l13.061224-77.322449C136.881633 553.273469 114.938776 496.326531 114.938776 437.289796 114.938776 292.571429 246.073469 175.020408 408.032653 175.020408c76.8 0 149.420408 26.644898 204.8 74.710204 55.379592 48.587755 86.726531 113.893878 88.293878 183.379592 0 5.746939-2.089796 10.971429-6.269388 14.628572s-9.404082 5.746939-15.151021 5.746938c-5.22449-0.522449-9.404082-0.522449-13.583673-0.522449-112.326531 0-203.232653 79.934694-203.232653 178.677551 0 13.583673 1.567347 27.167347 5.22449 40.751021 1.567347 5.746939 0.522449 11.493878-2.612245 16.195918-3.134694 4.702041-8.359184 7.836735-14.106123 8.881633-14.106122 2.089796-28.734694 3.134694-43.363265 3.134694-52.767347 0-104.489796-12.538776-149.420408-36.571429l-65.828572 34.481633c-3.134694 0-6.269388 1.044898-9.404081 1.044898z" fill="#0B9682" p-id="4069"></path><path d="M303.542857 352.653061m-35.004081 0a35.004082 35.004082 0 1 0 70.008163 0 35.004082 35.004082 0 1 0-70.008163 0Z" fill="#DCFFFA" p-id="4070"></path><path d="M512 352.653061m-35.004082 0a35.004082 35.004082 0 1 0 70.008164 0 35.004082 35.004082 0 1 0-70.008164 0Z" fill="#DCFFFA" p-id="4071"></path><path d="M849.502041 849.502041c-3.134694 0-6.269388-0.522449-9.404082-2.089796l-52.244898-27.167347c-37.093878 19.330612-78.889796 29.779592-122.253061 29.779592-134.269388 0-242.938776-98.220408-242.938776-218.383674S531.853061 412.734694 665.6 412.734694 909.061224 510.955102 909.061224 631.118367c0 48.065306-17.763265 95.085714-50.677551 133.22449l10.44898 61.64898c1.044898 7.314286-1.567347 15.15102-7.836735 19.330612-3.134694 3.134694-7.314286 4.179592-11.493877 4.179592z" fill="#16C4AF" p-id="4072"></path><path d="M576.261224 575.738776m-29.779591 0a29.779592 29.779592 0 1 0 59.559183 0 29.779592 29.779592 0 1 0-59.559183 0Z" fill="#DCFFFA" p-id="4073"></path><path d="M755.461224 575.738776m-29.779591 0a29.779592 29.779592 0 1 0 59.559183 0 29.779592 29.779592 0 1 0-59.559183 0Z" fill="#DCFFFA" p-id="4074"></path></svg>
+                         <el-button type="primary" style="width: 90%" @click="submit" :disabled="(isRight===false)||(loginInfo.code.length<6)">用户登录</el-button>
+                         <span @click="isLogin=false">微信扫码登录</span>
+                         <svg @click="isLogin=false" t="1691576674864" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4068" width="32" height="32"><path d="M183.379592 699.559184c-4.179592 0-8.359184-1.044898-11.493878-3.657143-6.269388-4.702041-9.404082-12.016327-7.836734-19.330612l13.061224-77.322449C136.881633 553.273469 114.938776 496.326531 114.938776 437.289796 114.938776 292.571429 246.073469 175.020408 408.032653 175.020408c76.8 0 149.420408 26.644898 204.8 74.710204 55.379592 48.587755 86.726531 113.893878 88.293878 183.379592 0 5.746939-2.089796 10.971429-6.269388 14.628572s-9.404082 5.746939-15.151021 5.746938c-5.22449-0.522449-9.404082-0.522449-13.583673-0.522449-112.326531 0-203.232653 79.934694-203.232653 178.677551 0 13.583673 1.567347 27.167347 5.22449 40.751021 1.567347 5.746939 0.522449 11.493878-2.612245 16.195918-3.134694 4.702041-8.359184 7.836735-14.106123 8.881633-14.106122 2.089796-28.734694 3.134694-43.363265 3.134694-52.767347 0-104.489796-12.538776-149.420408-36.571429l-65.828572 34.481633c-3.134694 0-6.269388 1.044898-9.404081 1.044898z" fill="#0B9682" p-id="4069"></path><path d="M303.542857 352.653061m-35.004081 0a35.004082 35.004082 0 1 0 70.008163 0 35.004082 35.004082 0 1 0-70.008163 0Z" fill="#DCFFFA" p-id="4070"></path><path d="M512 352.653061m-35.004082 0a35.004082 35.004082 0 1 0 70.008164 0 35.004082 35.004082 0 1 0-70.008164 0Z" fill="#DCFFFA" p-id="4071"></path><path d="M849.502041 849.502041c-3.134694 0-6.269388-0.522449-9.404082-2.089796l-52.244898-27.167347c-37.093878 19.330612-78.889796 29.779592-122.253061 29.779592-134.269388 0-242.938776-98.220408-242.938776-218.383674S531.853061 412.734694 665.6 412.734694 909.061224 510.955102 909.061224 631.118367c0 48.065306-17.763265 95.085714-50.677551 133.22449l10.44898 61.64898c1.044898 7.314286-1.567347 15.15102-7.836735 19.330612-3.134694 3.134694-7.314286 4.179592-11.493877 4.179592z" fill="#16C4AF" p-id="4072"></path><path d="M576.261224 575.738776m-29.779591 0a29.779592 29.779592 0 1 0 59.559183 0 29.779592 29.779592 0 1 0-59.559183 0Z" fill="#DCFFFA" p-id="4073"></path><path d="M755.461224 575.738776m-29.779591 0a29.779592 29.779592 0 1 0 59.559183 0 29.779592 29.779592 0 1 0-59.559183 0Z" fill="#DCFFFA" p-id="4074"></path></svg>
                     </div>
                 </div>
             </el-col>
 
-            <el-col :span="12" v-show="!login">
+            <el-col :span="12" v-show="!isLogin">
                 <div class="left">
                     <div class="login-code">
                              <h2>微信登录</h2>
@@ -45,7 +129,7 @@ const login=ref<boolean>(true)
                             <span>使用微信扫一扫登录</span>
                             <div class="icon">
                               <svg t="1691578481980" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5575" width="16" height="16"><path d="M341.333333 896H256V128h512v768H341.333333z m0-85.333333h341.333334V213.333333H341.333333v597.333334z m85.333334-42.666667v-85.333333h170.666666v85.333333h-170.666666z" fill="#444444" p-id="5576"></path></svg>
-                              <span @click="login=true">手机短信验证码登录</span>
+                              <span @click="isLogin=true">手机短信验证码登录</span>
                             </div>
                     </div>
                 </div>
@@ -101,10 +185,11 @@ const login=ref<boolean>(true)
             align-items: center;
             margin-top: 30px;
             width: 440px;
-            height: 350px;
+            height: 400px;
             border: 1px solid;
             .login-form{
                 margin: 20px;
+                margin-bottom: 40px;
             }
             span{
                 margin-top: 20px;
@@ -119,7 +204,7 @@ const login=ref<boolean>(true)
             // justify-content: center;
             margin-top: 30px;
             width: 440px;
-            height: 350px;
+            height: 400px;
             border: 1px solid;
             h2{
                 text-align: center;
