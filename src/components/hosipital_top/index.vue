@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import {useUserStore} from '@/store/user/user'
+import { ArrowDown } from '@element-plus/icons-vue'
+import {removeUserLoginInfoItem} from '@/utils/storage'
+import { ElMessage } from 'element-plus';
 const user=useUserStore()
+const logout=()=>{
+    removeUserLoginInfoItem()
+    user.nameAndToken={}
+    ElMessage.success('退出登录成功！')             
+}
 </script>
 
 <template>
@@ -15,7 +23,23 @@ const user=useUserStore()
         </div>
         <div class="main">
             <span>帮助中心</span>
-            <span @click="user.isVisable=true">登录/注册</span>
+            <span v-if="JSON.stringify(user.nameAndToken)==='{}'" @click="user.isVisable=true">登录/注册</span>
+            <el-dropdown v-else>
+                <span class="el-dropdown-link">
+                 {{ user.nameAndToken.name }}
+                <el-icon class="el-icon--right">
+                    <arrow-down />
+                </el-icon>
+                </span>
+                <template #dropdown>
+                <el-dropdown-menu>
+                    <el-dropdown-item>实名认证</el-dropdown-item>
+                    <el-dropdown-item>挂号订单</el-dropdown-item>
+                    <el-dropdown-item>就诊人管理</el-dropdown-item>
+                    <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+                </template>
+            </el-dropdown>
         </div>
     </div>
 
@@ -71,6 +95,8 @@ const user=useUserStore()
         .main{
             width: 166px;
             height: 20px;
+            display: flex;
+            align-items: center;
             span{
                 margin: auto 10px;
                 font-size:14px;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-
+import {useUserStore} from '@/store/user/user'
+const user=useUserStore()
 </script>
 
 <template>
@@ -7,7 +8,7 @@
     <HospitalTop></HospitalTop>
     <router-view></router-view>
     <HospitalBottom></HospitalBottom>
-    <Login></Login>
+    <Login v-if="user.isVisable"></Login>
   </div>
 
 </template>

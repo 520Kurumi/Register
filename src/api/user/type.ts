@@ -11,10 +11,8 @@ export interface PhoneCodeResponseData extends ResponseData{ //获取手机验�
 
 
 export interface PostUserLoginRequestData{
-    
         "code": string,
-        "phone": string
-      
+        "phone": string   
 }
 
 
@@ -31,4 +29,18 @@ export interface PhoneCodeTokenResponseData{
             "ok": boolean
         },
 
+}
+
+
+//获取二维码data中的数据类型
+export interface QRCodeDetailData{
+        "redirectUri": string,
+      "appid": string,
+      "scope": string,
+      "state": string
+}
+
+//获取二维码登录get的数据类型
+export interface QRCodeResponseData extends ResponseData{
+    "data": QRCodeDetailData
 }

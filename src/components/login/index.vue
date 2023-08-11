@@ -4,6 +4,7 @@ import {ref, reactive, computed} from 'vue'
 import {User,Lock} from '@element-plus/icons-vue'
 import type {  FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
+import {getQRCode} from '@/api/user/index'
 const user=useUserStore()
 const isLogin=ref<boolean>(true)
 const isGetCode=ref<boolean>(true)
@@ -22,8 +23,6 @@ const isRight =computed(()=>{
     return false
 })
 const getCode= async ()=>{
-
-
     try{
        await user.getPhoneCodeAction(loginInfo.phone)
     }catch(err){
@@ -70,7 +69,9 @@ const submit=()=>{
     loginForm?.value?.validate(async(isValid:boolean, invalidFields:[])=>{
         if(isValid){
             try {
-             await  user.postUserLoginAction(loginInfo)                
+             await  user.postUserLoginAction(loginInfo)
+             user.isVisable=false   
+             ElMessage.success('登录成功！')             
             } catch (error) {
                 ElMessage.error('错误，获取验证码失败')
             }finally{
@@ -84,6 +85,34 @@ const submit=()=>{
     })
 
 }
+const close=()=>{    //关闭dialog后触发
+    Object.assign(loginInfo,{ phone:'',code:''})
+    loginForm.value?.resetFields()
+}
+
+const wxLogin=async()=>{  //微信登陆
+    isLogin.value=false
+    const redirect_URL = encodeURIComponent(window.location.origin + "/wxlogin");
+    const res=await getQRCode(redirect_URL)
+    console.log(res.data)
+  //发请求获取微信扫码二维码需要参数
+  //获取微信扫码登录页面参数
+  //还需要携带一个参数:告诉学校服务器用户授权成功以后重定向项目某一个页面
+    const styleUrl='LmltcG93ZXJCb3h7CiB3aWR0aDogMjMwcHg7CiBoZWlnaHQ6IDIzMHB4OwogIGRpc3BsYXk6YmxvY2s7CiAgbWFyZ2luLXJpZ2h0OiA1MHB4Owp9Ci5pbXBvd2VyQm94IC5xcmNvZGUgewogYm9yZGVyOiBub25lOwogd2lkdGg6IDIwMHB4OwogaGVpZ2h0OiAyMDBweDsKfQoKcHsKICBkaXNwbGF5Om5vbmU7Cn0='
+    //@ts-ignore
+    new WxLogin({
+    self_redirect: true, //true:手机点击确认登录后可以在 iframe 内跳转到 redirect_uri
+    id: "login_container", //显示二维码容器设置
+    appid: res.data.data.appid, //应用位置标识appid
+    scope: "snsapi_login", //当前微信扫码登录页面已经授权了
+    redirect_uri: res.data.data.redirectUri, //填写授权回调域路径,就是用户授权成功以后，微信服务器向公司后台推送code地址
+    state: res.data.data.state, //state就是学校服务器重定向的地址携带用户信息
+    style: "black",
+    href:'data:text/css;base64,'+styleUrl //样式 通过编码方式给予
+  });
+  user.queryState()
+}
+
 </script>
 
 <template>
@@ -92,6 +121,7 @@ const submit=()=>{
          v-model="user.isVisable"
          title="用户登录"
          align-center
+         @close="close"
         >
         <el-row>
             <el-col :span="12" v-show="isLogin">
@@ -113,8 +143,8 @@ const submit=()=>{
                              </el-form>                           
                         </div>
                          <el-button type="primary" style="width: 90%" @click="submit" :disabled="(isRight===false)||(loginInfo.code.length<6)">用户登录</el-button>
-                         <span @click="isLogin=false">微信扫码登录</span>
-                         <svg @click="isLogin=false" t="1691576674864" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4068" width="32" height="32"><path d="M183.379592 699.559184c-4.179592 0-8.359184-1.044898-11.493878-3.657143-6.269388-4.702041-9.404082-12.016327-7.836734-19.330612l13.061224-77.322449C136.881633 553.273469 114.938776 496.326531 114.938776 437.289796 114.938776 292.571429 246.073469 175.020408 408.032653 175.020408c76.8 0 149.420408 26.644898 204.8 74.710204 55.379592 48.587755 86.726531 113.893878 88.293878 183.379592 0 5.746939-2.089796 10.971429-6.269388 14.628572s-9.404082 5.746939-15.151021 5.746938c-5.22449-0.522449-9.404082-0.522449-13.583673-0.522449-112.326531 0-203.232653 79.934694-203.232653 178.677551 0 13.583673 1.567347 27.167347 5.22449 40.751021 1.567347 5.746939 0.522449 11.493878-2.612245 16.195918-3.134694 4.702041-8.359184 7.836735-14.106123 8.881633-14.106122 2.089796-28.734694 3.134694-43.363265 3.134694-52.767347 0-104.489796-12.538776-149.420408-36.571429l-65.828572 34.481633c-3.134694 0-6.269388 1.044898-9.404081 1.044898z" fill="#0B9682" p-id="4069"></path><path d="M303.542857 352.653061m-35.004081 0a35.004082 35.004082 0 1 0 70.008163 0 35.004082 35.004082 0 1 0-70.008163 0Z" fill="#DCFFFA" p-id="4070"></path><path d="M512 352.653061m-35.004082 0a35.004082 35.004082 0 1 0 70.008164 0 35.004082 35.004082 0 1 0-70.008164 0Z" fill="#DCFFFA" p-id="4071"></path><path d="M849.502041 849.502041c-3.134694 0-6.269388-0.522449-9.404082-2.089796l-52.244898-27.167347c-37.093878 19.330612-78.889796 29.779592-122.253061 29.779592-134.269388 0-242.938776-98.220408-242.938776-218.383674S531.853061 412.734694 665.6 412.734694 909.061224 510.955102 909.061224 631.118367c0 48.065306-17.763265 95.085714-50.677551 133.22449l10.44898 61.64898c1.044898 7.314286-1.567347 15.15102-7.836735 19.330612-3.134694 3.134694-7.314286 4.179592-11.493877 4.179592z" fill="#16C4AF" p-id="4072"></path><path d="M576.261224 575.738776m-29.779591 0a29.779592 29.779592 0 1 0 59.559183 0 29.779592 29.779592 0 1 0-59.559183 0Z" fill="#DCFFFA" p-id="4073"></path><path d="M755.461224 575.738776m-29.779591 0a29.779592 29.779592 0 1 0 59.559183 0 29.779592 29.779592 0 1 0-59.559183 0Z" fill="#DCFFFA" p-id="4074"></path></svg>
+                         <span @click="wxLogin">微信扫码登录</span>
+                         <svg @click="wxLogin" t="1691576674864" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4068" width="32" height="32"><path d="M183.379592 699.559184c-4.179592 0-8.359184-1.044898-11.493878-3.657143-6.269388-4.702041-9.404082-12.016327-7.836734-19.330612l13.061224-77.322449C136.881633 553.273469 114.938776 496.326531 114.938776 437.289796 114.938776 292.571429 246.073469 175.020408 408.032653 175.020408c76.8 0 149.420408 26.644898 204.8 74.710204 55.379592 48.587755 86.726531 113.893878 88.293878 183.379592 0 5.746939-2.089796 10.971429-6.269388 14.628572s-9.404082 5.746939-15.151021 5.746938c-5.22449-0.522449-9.404082-0.522449-13.583673-0.522449-112.326531 0-203.232653 79.934694-203.232653 178.677551 0 13.583673 1.567347 27.167347 5.22449 40.751021 1.567347 5.746939 0.522449 11.493878-2.612245 16.195918-3.134694 4.702041-8.359184 7.836735-14.106123 8.881633-14.106122 2.089796-28.734694 3.134694-43.363265 3.134694-52.767347 0-104.489796-12.538776-149.420408-36.571429l-65.828572 34.481633c-3.134694 0-6.269388 1.044898-9.404081 1.044898z" fill="#0B9682" p-id="4069"></path><path d="M303.542857 352.653061m-35.004081 0a35.004082 35.004082 0 1 0 70.008163 0 35.004082 35.004082 0 1 0-70.008163 0Z" fill="#DCFFFA" p-id="4070"></path><path d="M512 352.653061m-35.004082 0a35.004082 35.004082 0 1 0 70.008164 0 35.004082 35.004082 0 1 0-70.008164 0Z" fill="#DCFFFA" p-id="4071"></path><path d="M849.502041 849.502041c-3.134694 0-6.269388-0.522449-9.404082-2.089796l-52.244898-27.167347c-37.093878 19.330612-78.889796 29.779592-122.253061 29.779592-134.269388 0-242.938776-98.220408-242.938776-218.383674S531.853061 412.734694 665.6 412.734694 909.061224 510.955102 909.061224 631.118367c0 48.065306-17.763265 95.085714-50.677551 133.22449l10.44898 61.64898c1.044898 7.314286-1.567347 15.15102-7.836735 19.330612-3.134694 3.134694-7.314286 4.179592-11.493877 4.179592z" fill="#16C4AF" p-id="4072"></path><path d="M576.261224 575.738776m-29.779591 0a29.779592 29.779592 0 1 0 59.559183 0 29.779592 29.779592 0 1 0-59.559183 0Z" fill="#DCFFFA" p-id="4073"></path><path d="M755.461224 575.738776m-29.779591 0a29.779592 29.779592 0 1 0 59.559183 0 29.779592 29.779592 0 1 0-59.559183 0Z" fill="#DCFFFA" p-id="4074"></path></svg>
                     </div>
                 </div>
             </el-col>
@@ -122,11 +152,12 @@ const submit=()=>{
             <el-col :span="12" v-show="!isLogin">
                 <div class="left">
                     <div class="login-code">
-                             <h2>微信登录</h2>
-                            <div class="img-code">
-                                <img src="../../assets/images/code_login_wechat.png" alt="">
+                             <!-- <h2>微信登录</h2> -->
+                            <div class="img-code" >
+                                <div id="login_container"></div>
+                                <!-- <img src="../../assets/images/code_login_wechat.png" alt=""> -->
                             </div>
-                            <span>使用微信扫一扫登录</span>
+                            <!-- <span>使用微信扫一扫登录</span> -->
                             <div class="icon">
                               <svg t="1691578481980" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5575" width="16" height="16"><path d="M341.333333 896H256V128h512v768H341.333333z m0-85.333333h341.333334V213.333333H341.333333v597.333334z m85.333334-42.666667v-85.333333h170.666666v85.333333h-170.666666z" fill="#444444" p-id="5576"></path></svg>
                               <span @click="isLogin=true">手机短信验证码登录</span>
@@ -172,7 +203,14 @@ const submit=()=>{
     border-bottom: 1px solid;
 }
 
+// .qrcode,.wrp_code{
+//     width: 200px;
+//     height: 200px;
+//     margin-bottom: 10px;
+// }   
+
 .container{
+
     .left{
         width: 440px;
         height: 450px;
@@ -224,6 +262,7 @@ const submit=()=>{
                     width: 200px;
                      height: 200px;
                 }
+
             }
             span{
                 color: #606266;
@@ -232,7 +271,7 @@ const submit=()=>{
             }
             .icon{
                 cursor: pointer;
-                margin-top: 10px;
+                margin-top: 60px;
             }
         }
     }

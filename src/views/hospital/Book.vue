@@ -133,6 +133,7 @@ const selectDepart=(index:number)=>{
           font-size: 12px;
           color: #999;
           line-height: 12px;
+
         }
       }
     }
@@ -205,6 +206,7 @@ const selectDepart=(index:number)=>{
             line-height: 20px;
             overflow: hidden;
             text-overflow: ellipsis;
+            cursor: pointer;
           }
         }
       }
