@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus';
 import {start,stop} from './serviceHelp'
+import {useUserStore} from '@/store/user/user'
 const request= axios.create({
     baseURL:'/api',
     timeout:5000
@@ -8,6 +9,10 @@ const request= axios.create({
 request.interceptors.request.use(function (config) {
       start()
     // 在发送请求之前做些什么
+    const user=useUserStore()
+    if(user.nameAndToken.token){
+      config.headers.token=user.nameAndToken.token
+    }
     return config;
   }, function (error) {
     // 对请求错误做些什么

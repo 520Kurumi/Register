@@ -36,7 +36,12 @@ const changeActive=(path:string)=>{
                 :default-active="$route.path"
                 router
                 >
-                    <el-menu-item index="/hospital/book"  @click="changeActive(`/hospital/book`)">
+                    <el-menu-item v-show="$route.path==='/hospital/book'" index="/hospital/book"  @click="changeActive(`/hospital/book`)">
+                        <el-icon><Menu></Menu></el-icon>
+                    <p>预约挂号</p>
+                    </el-menu-item>
+
+                    <el-menu-item v-show="$route.path==='/hospital/enterbook'" index="/hospital/enterbook"  @click="changeActive(`/hospital/book`)">
                         <el-icon><Menu></Menu></el-icon>
                     <p>预约挂号</p>
                     </el-menu-item>

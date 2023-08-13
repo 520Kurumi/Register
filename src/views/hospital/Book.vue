@@ -2,10 +2,13 @@
 import {ref} from 'vue'
 import {useHospitalDetailStore} from '@/store/hospital/hospitalDetail'
 import {storeToRefs} from 'pinia'
+import { useRouter,useRoute } from 'vue-router';
 const hospitalDetail=useHospitalDetailStore()
 const {hospitalDetailInfo,hospitalDepartment}=storeToRefs(hospitalDetail)
 const currentIndex=ref<number>(0)
 const name=ref([])
+const $router=useRouter()
+const $route=useRoute()
 const selectDepart=(index:number)=>{
   currentIndex.value=index
   // console.log(name.value[0])
@@ -16,6 +19,15 @@ const selectDepart=(index:number)=>{
    })
 }
 
+const enterBook=(depcode:string)=>{
+   $router.push({
+      path:'/hospital/enterbook',
+      query:{
+        "depcode":depcode,
+        "hoscode":$route.query.hoscode
+      }
+   })
+}
 </script>
 
 <template>
@@ -60,7 +72,7 @@ const selectDepart=(index:number)=>{
               <div class="detailDepart" v-for="item in hospitalDepartment" >
                       <h2 ref="name">{{ item.depname }}</h2>
                       <ul>
-                         <li v-for="detail in item.children">{{ detail.depname }}</li>
+                         <li v-for="detail in item.children" @click="enterBook(detail.depcode)">{{ detail.depname }}</li>
                       </ul>
               </div>
         </div>
