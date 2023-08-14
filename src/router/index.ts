@@ -11,7 +11,8 @@ export default createRouter({
             {path:'info',component:()=>import('@/views/hospital/Info.vue')},
             {path:'search',component:()=>import('@/views/hospital/Search.vue')},
             {path:'required',component:()=>import('@/views/hospital/Required.vue')},
-            {path:'enterbook',component:()=>import('@/views/hospital/EnterBook.vue')}
+            {path:'enterbook',component:()=>import('@/views/hospital/EnterBook.vue')},
+            {path:'register',component:()=>import('@/views/hospital/Register.vue')}
          ]},
          {path:'/wxlogin',component:()=>import('@/views/wxlogin/index.vue')}
     ],

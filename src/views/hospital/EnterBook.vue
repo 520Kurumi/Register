@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import {onMounted,ref} from 'vue'
 import {getEnterBook,getBookingDoctor} from '@/api/hospital/index'
-import { useRoute } from 'vue-router';
+import { useRoute,useRouter } from 'vue-router';
 import {BookingScheduleData,BookingDoctorResponseData,BookingScheduleInfo} from '@/api/hospital/type'
+import { ElMessage } from 'element-plus'
 const $route=useRoute()
+const $router=useRouter()
 const nowIndex=ref<number>(0)
 const booksChedule=ref<BookingScheduleData>() //部门排班表
 const booksDoctor=ref<BookingDoctorResponseData>()//选定当天医生安排
@@ -62,6 +64,16 @@ const getBookingDoctorList=async(item:BookingScheduleInfo,index:number)=>{
     booksDoctor.value=res.data
     // console.log(res.data)
 }
+
+const goRegister=(id:string)=>{
+    ElMessage.success('点击成功！')
+    $router.push({
+        path:'/hospital/register',
+        query:{
+            id
+        }
+    })
+}
 </script>
 
 <template>
@@ -111,8 +123,8 @@ const getBookingDoctorList=async(item:BookingScheduleInfo,index:number)=>{
                             <div class="right">
                                 <p class="fee">￥{{ item.amount }}</p>
                                 <div class="button"> 
-                                    <el-button type="info" size="large" v-if="status===-1||status===0">剩余{{ item.availableNumber }}</el-button>
-                                    <el-button type="primary" size="large" v-else>剩余{{ item.availableNumber }}</el-button>
+                                    <el-button type="info" size="large" v-if="status===-1||status===0" @click=" ElMessage.error('预约失败')">剩余{{ item.availableNumber }}</el-button>
+                                    <el-button type="primary" size="large" @click="goRegister(item.id)" v-else>剩余{{ item.availableNumber }}</el-button>
                                 </div>
                             </div>
                         </div>   
@@ -130,8 +142,8 @@ const getBookingDoctorList=async(item:BookingScheduleInfo,index:number)=>{
                                 <div class="right">
                                     <p class="fee">￥{{ item.amount }}</p>
                                     <div class="button">
-                                        <el-button type="info" size="large" v-if="status===-1||status===0">剩余{{ item.availableNumber }}</el-button>
-                                        <el-button type="primary" size="large" v-else>剩余{{ item.availableNumber }}</el-button>
+                                        <el-button type="info" size="large" v-if="status===-1||status===0"  @click=" ElMessage.error('预约失败')">剩余{{ item.availableNumber }}</el-button>
+                                        <el-button type="primary" size="large" @click="goRegister(item.id)" v-else>剩余{{ item.availableNumber }}</el-button>
                                     </div>
                                 </div>
                             </div>

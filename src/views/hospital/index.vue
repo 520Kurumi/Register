@@ -46,6 +46,11 @@ const changeActive=(path:string)=>{
                     <p>预约挂号</p>
                     </el-menu-item>
 
+                    <el-menu-item v-show="$route.path==='/hospital/register'" index="/hospital/register"  @click="changeActive(`/hospital/book`)">
+                        <el-icon><Menu></Menu></el-icon>
+                    <p>预约挂号</p>
+                    </el-menu-item>
+
                     <el-menu-item index="/hospital/detail"  @click="changeActive(`/hospital/detail`)">
                         <el-icon><Memo /></el-icon>
                     <p>医院详细</p>
