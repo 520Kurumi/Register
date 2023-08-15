@@ -10,13 +10,16 @@ const nowIndex=ref<number>(0)
 const booksChedule=ref<BookingScheduleData>() //部门排班表
 const booksDoctor=ref<BookingDoctorResponseData>()//选定当天医生安排
 const nowPage=ref<number>(1)
-const hoscode:string=$route.query.hoscode as string//医院编号
-const depcode:string=$route.query.depcode as string//部门编号
+let hoscode:string;//医院编号
+let depcode:string;//部门编号
 const status=ref<number>(0) //-1代表停止挂号 0代表无号 1代表有号 2代表即将挂号
 const lastTime=ref<string>('')
 onMounted(()=>{
+    hoscode=$route.query.hoscode as string//医院编号
+    depcode=$route.query.depcode as string//部门编号    
     getEnterBookList()
     getLastTime() //进入页面后开始进行倒计时
+
 })
 const getLastTime=()=>{ //用于计算明天挂号倒计时
     setInterval(()=>{
@@ -66,11 +69,11 @@ const getBookingDoctorList=async(item:BookingScheduleInfo,index:number)=>{
 }
 
 const goRegister=(id:string)=>{
-    ElMessage.success('点击成功！')
     $router.push({
         path:'/hospital/register',
         query:{
-            id
+            scheduleId:id,
+            hoscode:$route.query.hoscode //需要加这个，避免刷新丢失
         }
     })
 }

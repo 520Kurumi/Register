@@ -120,3 +120,43 @@ export interface ScheduleInfo{
 export interface ScheduleInfoResponseData extends ResponseData{
     data:ScheduleInfo
 }
+
+
+export interface OrderIdResponseData extends ResponseData{
+     data:number
+}
+
+
+export interface OrderInfo{  //订单具体信息
+    "id": number,
+    "createTime": string,
+    "updateTime": string,
+    "isDeleted": number,
+    "param": {
+      "orderStatusString": string
+    },
+    "userId": number,
+    "outTradeNo": string,
+    "hoscode": string,
+    "hosname": string,
+    "depcode": string,
+    "depname": string,
+    "scheduleId": string,
+    "title": string,
+    "reserveDate": string,
+    "reserveTime": number,
+    "patientId": number,
+    "patientName": string,
+    "patientPhone": string,
+    "hosRecordId": string,
+    "number": number,
+    "fetchTime": string,
+    "fetchAddress": string,
+    "amount": number,
+    "quitTime": string,
+    "orderStatus": number
+}
+
+export interface OrderInfoResponseData extends ResponseData{
+    data:OrderInfo
+}

@@ -9,8 +9,6 @@ interface Props{
 const props= defineProps<Props>()
 
 const emits= defineEmits(['goSelect'])
-  console.log(props.index)
-  console.log(props.currentIndex)
 
   const select=(index:number)=>{
       emits('goSelect',index)

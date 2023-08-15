@@ -1,12 +1,16 @@
 import request from "@/utils/request";
-import {PhoneCodeResponseData,PostUserLoginRequestData, QRCodeResponseData,MdedicalInfoResponseData,ScheduleInfoResponseData} from './type'
+import {PhoneCodeResponseData,PostUserLoginRequestData, QRCodeResponseData,
+    MdedicalInfoResponseData,ScheduleInfoResponseData,OrderIdResponseData,OrderInfoResponseData} from './type'
 
 enum API{
     USERLOGINURL='/sms/send/',
     POSTLOGINURL='/user/login',
     getQRCode_URL='/user/weixin/getLoginParam/',
     getPTIENT_URL='/user/patient/auth/findAll',
-    getSCHEDULE_URL='/hosp/hospital/getSchedule/' //挂号信息
+    getSCHEDULE_URL='/hosp/hospital/getSchedule/' ,//挂号信息,
+    postORDER_URL='/order/orderInfo/auth/submitOrder/',
+    getORDERINFO_URL='/order/orderInfo/auth/getOrderInfo/',
+    getCANCELORDER_URL='/order/orderInfo/auth/cancelOrder/'
 }
 
 export const getPhoneCode=(phone:string)=>{ //输入手机号返回手机验证码
@@ -27,4 +31,19 @@ export const getPatient=()=>{ //获取当前账号挂号信息
 export const getSchedule=(scheduleId:string)=>{
     return request.get<any,{data:ScheduleInfoResponseData}>(API.getSCHEDULE_URL+scheduleId)
 }
+
+export const postOrder=(hoscode:string,scheduleId:string,patientId:string)=>{  //提交订单
+    return request.post<any,{data:OrderIdResponseData}>(API.postORDER_URL+`${hoscode}/${scheduleId}/${patientId}`)
+}
+
+export const getOrderInfo=(id:number)=>{
+        return  request.get<any,{data:OrderInfoResponseData}>(API.getORDERINFO_URL+id)
+}
+
+export const getCancelOrder=(orderId:number)=>{
+    return request.get(API.getCANCELORDER_URL+orderId)
+}
+
+  
+
 

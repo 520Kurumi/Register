@@ -4,12 +4,13 @@ import Register from '@/components/register/index.vue'
 import {onMounted,ref} from 'vue'
 import {getPatient,getSchedule} from '@/api/user/index'
 import {MdedicalInfoArr} from '@/api/user/type'
-import { useRoute } from 'vue-router'
+import { useRoute,useRouter } from 'vue-router'
 import {ScheduleInfo} from '@/api/user/type'
 import { ElMessage } from 'element-plus'
 const currentIndex=ref<number>(-1) //用于点击切换样式
 const $route=useRoute()
-const patient=ref<MdedicalInfoArr>()
+const $router=useRouter()
+const patient=ref<MdedicalInfoArr>([])
 const schedule=ref<ScheduleInfo>()
 onMounted(async()=>{
    const res=await getPatient()
@@ -17,11 +18,11 @@ onMounted(async()=>{
    if(res.data.code===200) {
      patient.value=res.data.data
    }
-   const resSchedule= await getSchedule($route.query.id as string)  
+   const resSchedule= await getSchedule($route.query.scheduleId as string)  
     if(resSchedule.data.code===200) {
         schedule.value=resSchedule.data.data
     }
-    console.log(resSchedule.data.data)
+    // console.log(res.data.data)
 })
 
 const goSelect=(index:number)=>{
@@ -30,6 +31,18 @@ const goSelect=(index:number)=>{
         return
     }
     currentIndex.value=index
+}
+
+const book=()=>{
+    ElMessage.success('预约成功')
+    $router.push({
+        path:'/user',
+        query:{
+            "scheduleId":$route.query.scheduleId,
+            "hoscode":$route.query.hoscode,
+            "patientId":patient.value[currentIndex.value].id
+        }
+    })
 }
 </script>
 
@@ -71,7 +84,7 @@ const goSelect=(index:number)=>{
     </template>
   </el-card>
     <div class="button">
-        <el-button type="primary" v-if="currentIndex!==-1"  @click="ElMessage.success('预约成功')">点击预约</el-button>
+        <el-button type="primary" v-if="currentIndex!==-1"  @click="book">点击预约</el-button>
         <el-button type="info" v-else @click="ElMessage.error('请选择就诊人')">点击预约</el-button>
     </div> 
  </div>
@@ -96,6 +109,7 @@ const goSelect=(index:number)=>{
             justify-content: space-between;
         }
         .register{
+            cursor: pointer;
             width: 1000px;
             display: flex;
             flex-wrap: wrap;

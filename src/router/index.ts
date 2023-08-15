@@ -14,7 +14,16 @@ export default createRouter({
             {path:'enterbook',component:()=>import('@/views/hospital/EnterBook.vue')},
             {path:'register',component:()=>import('@/views/hospital/Register.vue')}
          ]},
-         {path:'/wxlogin',component:()=>import('@/views/wxlogin/index.vue')}
+         {path:'/wxlogin',component:()=>import('@/views/wxlogin/index.vue')},
+         {path:'/user',component:()=>import('@/views/user/index.vue'),redirect:'/user/order',
+         children:[
+            {path:'identify',component:()=>import('@/views/user/Identify.vue')},
+            {path:'account',component:()=>import('@/views/user/Account.vue')},
+            {path:'order',component:()=>import('@/views/user/Order.vue')},
+            {path:'suggest',component:()=>import('@/views/user/Suggest.vue')},
+            {path:'vistor',component:()=>import('@/views/user/Vistor.vue')},
+
+         ]},
     ],
     scrollBehavior(){
         return{
