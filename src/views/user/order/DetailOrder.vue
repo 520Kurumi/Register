@@ -1,16 +1,22 @@
 <script setup lang="ts">
-import {getOrderInfo,getCancelOrder} from '@/api/user/index'
+import {getOrderInfo,getCancelOrder,getQRCodeImg,getQRCodeImgStatus} from '@/api/user/index'
 import {onMounted,ref} from 'vue'
 import {OrderInfo} from '@/api/user/type'
+import QRCode from 'qrcode'
+import { ElMessage } from 'element-plus';
 interface Prop{
   orderId:number
 }
 const props=defineProps<Prop>()
 const info=ref<OrderInfo>()
 const status=ref<number>(0)  //0代表预约成功，待支付  1代表已取消  2代表取消失败 3代表支付成功
+const dialogVisible=ref<boolean>(false)
+const imgUrl=ref<string>()
+let timer=ref<any>()//定时器
 onMounted(async()=>{
   const res=await getOrderInfo(props.orderId)
   info.value=res.data.data
+  // console.log(props.orderId)
 })
 
 const goCancel=async()=>{
@@ -21,6 +27,31 @@ const goCancel=async()=>{
   }else if(res.data.code===200){
     status.value=1
   }
+}
+
+const openDialog=async()=>{
+  dialogVisible.value=true
+  const res=await getQRCodeImg(props.orderId)
+  clearInterval(timer.value)
+  QRCode.toDataURL(res.data.data.codeUrl).then((result:string) =>{
+   imgUrl.value=result
+   timer.value=setInterval(async()=>{
+      const resStatus=await getQRCodeImgStatus(props.orderId)
+      if(resStatus.data.data){
+          clearInterval(timer.value)
+          dialogVisible.value=false
+          status.value=3
+          ElMessage.success('支付成功')
+      }
+   },4000)
+  }).catch((err:string)=>{
+    console.log(err)
+  })
+  
+}
+
+const closeDialog=()=>{
+  clearInterval(timer.value)
 }
 </script>
 
@@ -67,7 +98,7 @@ const goCancel=async()=>{
                         <el-button>取消预约</el-button>
                       </template>
                     </el-popconfirm>
-                      <el-button type="primary">支付</el-button>
+                      <el-button type="primary" @click="openDialog">支付</el-button>
                   </div>
                  
               </div>
@@ -93,6 +124,21 @@ const goCancel=async()=>{
     </template>
   </el-card>
 
+      <el-dialog
+        v-model="dialogVisible"
+        title="微信支付"
+        width="30%"
+        @close="closeDialog"
+      >
+          <div class="qrcode">
+              <img :src="imgUrl" alt="">
+              <p>请使用微信扫一扫</p>
+              <p>扫描二维码支付</p>
+          </div>
+        <template #footer>
+          <el-button @click="dialogVisible = false">取消</el-button>
+        </template>
+      </el-dialog>
 </template>
 
 <style scoped lang="scss">
@@ -162,5 +208,27 @@ const goCancel=async()=>{
         }
       }
     }
+
+
 }
+    .qrcode{
+      width: 100%;
+      height: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+       img{
+        width: 210px;
+        height: 210px;
+       }
+       p{
+         margin-top: 10px;
+       }
+    }
+
+
+
+
+
 </style>

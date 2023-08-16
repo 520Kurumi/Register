@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,//新增
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -25,5 +26,6 @@
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "allowSyntheticDefaultImports": true // 当一个模块没有默认导出时，允许 "import x from y"
 }

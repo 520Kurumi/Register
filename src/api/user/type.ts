@@ -160,3 +160,39 @@ export interface OrderInfo{  //订单具体信息
 export interface OrderInfoResponseData extends ResponseData{
     data:OrderInfo
 }
+
+export interface QRCodeImg{
+    "codeUrl": string,
+    "orderId": number,
+    "totalFee": number,
+    "resultCode":string
+}
+
+export interface QRCodeImgResponseData extends ResponseData{
+    data:QRCodeImg
+}
+
+export interface QRCodeImgStatusResponseData extends ResponseData{
+    data:boolean
+}
+
+export interface UserInfo{
+        "id": number,
+        "createTime": string,
+        "updateTime": string,
+        "isDeleted": number,
+        "param": {},
+        "openid": string,
+        "nickName": string,
+        "phone": string,
+        "name": string,
+        "certificatesType": string,
+        "certificatesNo": string,
+        "certificatesUrl": string,
+        "authStatus": number,
+        "status": number
+}
+
+export interface UserInfoResponseData extends ResponseData{
+   data:UserInfo
+}

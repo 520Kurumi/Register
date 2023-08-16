@@ -4,10 +4,10 @@ import {start,stop} from './serviceHelp'
 import {useUserStore} from '@/store/user/user'
 const request= axios.create({
     baseURL:'/api',
-    timeout:5000
+    timeout:10000
 })
 request.interceptors.request.use(function (config) {
-      start()
+            start() 
     // 在发送请求之前做些什么
     const user=useUserStore()
     if(user.nameAndToken.token){
@@ -29,6 +29,7 @@ request.interceptors.response.use(function (response) {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
     let status = error.response.status;
+    
     switch (status) {
           case 404:
                 //错误提示信息

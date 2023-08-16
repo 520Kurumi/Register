@@ -1,6 +1,7 @@
 import request from "@/utils/request";
 import {PhoneCodeResponseData,PostUserLoginRequestData, QRCodeResponseData,
-    MdedicalInfoResponseData,ScheduleInfoResponseData,OrderIdResponseData,OrderInfoResponseData} from './type'
+    MdedicalInfoResponseData,ScheduleInfoResponseData,OrderIdResponseData,OrderInfoResponseData,QRCodeImgResponseData,
+    QRCodeImgStatusResponseData,UserInfoResponseData} from './type'
 
 enum API{
     USERLOGINURL='/sms/send/',
@@ -10,7 +11,10 @@ enum API{
     getSCHEDULE_URL='/hosp/hospital/getSchedule/' ,//挂号信息,
     postORDER_URL='/order/orderInfo/auth/submitOrder/',
     getORDERINFO_URL='/order/orderInfo/auth/getOrderInfo/',
-    getCANCELORDER_URL='/order/orderInfo/auth/cancelOrder/'
+    getCANCELORDER_URL='/order/orderInfo/auth/cancelOrder/',
+    getQRCODEIMG_URL='/order/weixin/createNative/',
+    getQRCODEIMGSTATUS_URL='/order/weixin/queryPayStatus/',
+    getUSERINFO_URL='/user/auth/getUserInfo'
 }
 
 export const getPhoneCode=(phone:string)=>{ //输入手机号返回手机验证码
@@ -42,6 +46,18 @@ export const getOrderInfo=(id:number)=>{
 
 export const getCancelOrder=(orderId:number)=>{
     return request.get(API.getCANCELORDER_URL+orderId)
+}
+
+export const getQRCodeImg=(orderId:number)=>{
+    return request.get<any,{data:QRCodeImgResponseData}>(API.getQRCODEIMG_URL+orderId)
+}
+
+export const getQRCodeImgStatus=(orderId:number)=>{
+    return request.get<any,{data:QRCodeImgStatusResponseData}>(API.getQRCODEIMGSTATUS_URL+orderId)
+}
+
+export const getUserInfo=()=>{
+    return request.get<any,{data:UserInfoResponseData}>(API.getUSERINFO_URL)
 }
 
   
