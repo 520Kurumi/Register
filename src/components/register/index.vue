@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import {Edit} from '@element-plus/icons-vue'
+import {Edit,Delete} from '@element-plus/icons-vue'
 import {MdedicalInfo} from '@/api/user/type'
 interface Props{
   item:MdedicalInfo,
   index:number,
-  currentIndex:number
+  currentIndex:number,
+  isDeleteIcon:boolean
 }
-const props= defineProps<Props>()
+defineProps<Props>()
 
 const emits= defineEmits(['goSelect'])
 
@@ -25,7 +26,11 @@ const emits= defineEmits(['goSelect'])
            <span class="medical">{{ item.isInsure===1?'医保':'自费' }}</span>
            <span class="name">{{item.name}}</span>
         </div>
-        <el-button type="primary" :icon="Edit" circle />
+        <div class="button">
+             <el-button type="primary" :icon="Edit" circle />
+             <el-button type="danger" v-if="isDeleteIcon===true" :icon="Delete" circle></el-button>
+        </div>
+
       </div>
     </template>
 

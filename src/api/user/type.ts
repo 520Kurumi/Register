@@ -196,3 +196,72 @@ export interface UserInfo{
 export interface UserInfoResponseData extends ResponseData{
    data:UserInfo
 }
+
+export interface UserParams{
+    "certificatesNo": string,
+    "certificatesType": string,
+    "certificatesUrl": string,
+    "name": string
+}
+
+//得到用户订单信息
+export type UserOrder={
+    "id": number,
+    "createTime": string,
+    "updateTime": string,
+    "isDeleted": number,
+    "param": {
+      "orderStatusString": string
+    },
+    "userId": string,
+    "outTradeNo": string,
+    "hoscode": string,
+    "hosname": string,
+    "depcode": string,
+    "depname": string,
+    "scheduleId": string,
+    "title": string,
+    "reserveDate": string,
+    "reserveTime": number,
+    "patientId": number,
+    "patientName": string,
+    "patientPhone": string,
+    "hosRecordId": string,
+    "number": number,
+    "fetchTime": string,
+    "fetchAddress": string,
+    "amount": number,
+    "quitTime": string,
+    "orderStatus": number
+}
+
+
+export type UserOrderArr=UserOrder[]
+
+
+//得到用户订单信息的data数据
+export interface UserOrderResponseData extends ResponseData{
+     data:{
+        current:number,
+        hitCount:boolean,
+        orders:[],
+        searchCount:boolean,
+        size:number,
+        total:number,
+        records:UserOrderArr,
+
+    }
+}
+
+export type OrderStatus={  //订单状态
+    
+     "comment": string,
+    "status": number
+    
+}
+
+export type OrderStatusArr=OrderStatus[]
+
+export interface OrderStatusResponseData extends ResponseData{
+   data:OrderStatusArr
+}

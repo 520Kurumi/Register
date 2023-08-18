@@ -3,11 +3,14 @@ import {useUserStore} from '@/store/user/user'
 import { ArrowDown } from '@element-plus/icons-vue'
 import {removeUserLoginInfoItem} from '@/utils/storage'
 import { ElMessage } from 'element-plus';
+import { useRouter } from 'vue-router';
+const  $router=useRouter()
 const user=useUserStore()
 const logout=()=>{
     removeUserLoginInfoItem()
     user.nameAndToken={}
-    ElMessage.success('退出登录成功！')             
+    ElMessage.success('退出登录成功！')    
+    $router.push('/home')        
 }
 </script>
 
@@ -33,7 +36,7 @@ const logout=()=>{
                 </span>
                 <template #dropdown>
                 <el-dropdown-menu>
-                    <el-dropdown-item>实名认证</el-dropdown-item>
+                    <el-dropdown-item @click="$router.push('/user/identify')">实名认证</el-dropdown-item>
                     <el-dropdown-item>挂号订单</el-dropdown-item>
                     <el-dropdown-item>就诊人管理</el-dropdown-item>
                     <el-dropdown-item @click="logout">退出登录</el-dropdown-item>

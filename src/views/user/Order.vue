@@ -14,7 +14,10 @@ onMounted(async ()=>{
   const patientId:string=$route.query.patientId as string
   const resOrderId=await postOrder(hoscode,scheduleId,patientId)
   // console.log(hoscode,scheduleId,patientId)
-  orderId.value=resOrderId.data.data
+  if(resOrderId.data.data){
+     orderId.value=resOrderId.data.data
+  }
+ 
   // console.log(resOrderId.data.data)
 })
 

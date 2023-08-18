@@ -1,7 +1,7 @@
 import request from "@/utils/request";
 import {PhoneCodeResponseData,PostUserLoginRequestData, QRCodeResponseData,
     MdedicalInfoResponseData,ScheduleInfoResponseData,OrderIdResponseData,OrderInfoResponseData,QRCodeImgResponseData,
-    QRCodeImgStatusResponseData,UserInfoResponseData} from './type'
+    QRCodeImgStatusResponseData,UserInfoResponseData,UserParams,UserOrderResponseData,OrderStatusResponseData} from './type'
 
 enum API{
     USERLOGINURL='/sms/send/',
@@ -14,7 +14,10 @@ enum API{
     getCANCELORDER_URL='/order/orderInfo/auth/cancelOrder/',
     getQRCODEIMG_URL='/order/weixin/createNative/',
     getQRCODEIMGSTATUS_URL='/order/weixin/queryPayStatus/',
-    getUSERINFO_URL='/user/auth/getUserInfo'
+    getUSERINFO_URL='/user/auth/getUserInfo',
+    postIDENTIFY_URL='/user/auth/userAuah',
+    getUSERORDER_URL='/order/orderInfo/auth/', //用于得到登录用户订单信息
+    getORDERSTATUS_URL='/order/orderInfo/auth/getStatusList' //用于得到订单状态
 }
 
 export const getPhoneCode=(phone:string)=>{ //输入手机号返回手机验证码
@@ -60,6 +63,20 @@ export const getUserInfo=()=>{
     return request.get<any,{data:UserInfoResponseData}>(API.getUSERINFO_URL)
 }
 
+
+//用于提交实名认证
+export const postIdentify=(UserParams:UserParams)=>{
+    return request.post<any,any>(API.postIDENTIFY_URL,UserParams)
+}
+
+export const getUserOrder=(page:number,limit:number,patientId:string,orderStatus:string)=>{
+     return request.get<any,{data:UserOrderResponseData}>(API.getUSERORDER_URL+`${page}/${limit}/${patientId}/${orderStatus}`)
+}
+
+
+export const getorderStatus=()=>{
+    return request.get<any,{data:OrderStatusResponseData}>(API.getORDERSTATUS_URL)
+}
   
 
 
