@@ -1,0 +1,1 @@
+import{f as e}from"./index-e9f8ae92.js";const n=t=>e.get("/hosp/hospital/"+t),p=t=>e.get("/hosp/hospital/department/"+t),g=(t,o,s,a)=>e.get(`/hosp/hospital/auth/getBookingScheduleRule/${t}/${o}/${s}/${a}`),h=(t,o,s)=>e.get(`/hosp/hospital/auth/findScheduleList/${t}/${o}/${s}`);export{p as a,g as b,h as c,n as g};
