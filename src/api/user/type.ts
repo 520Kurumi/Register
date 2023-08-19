@@ -265,3 +265,21 @@ export type OrderStatusArr=OrderStatus[]
 export interface OrderStatusResponseData extends ResponseData{
    data:OrderStatusArr
 }
+
+export interface ReqVistor{ //用于新增或者修改就诊人
+    id?: string,
+    name: string,
+    certificatesType: string,
+    certificatesNo:string,
+    sex:number,
+    birthdate:string,
+    phone:string,
+    isMarry:number,
+    isInsure:number,
+    addressSelected:string[],
+    address:string,
+    contactsName:string,
+    contactsCertificatesType:string,
+    contactsCertificatesNo:string,
+    contactsPhone:string
+}

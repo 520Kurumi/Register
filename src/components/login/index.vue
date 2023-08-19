@@ -5,6 +5,9 @@ import {User,Lock} from '@element-plus/icons-vue'
 import type {  FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import {getQRCode} from '@/api/user/index'
+import { useRoute,useRouter } from 'vue-router'
+const $route=useRoute()
+const $router=useRouter()
 const user=useUserStore()
 const isLogin=ref<boolean>(true)
 const isGetCode=ref<boolean>(true)
@@ -70,8 +73,16 @@ const submit=()=>{
         if(isValid){
             try {
              await  user.postUserLoginAction(loginInfo)
-             user.isVisable=false   
-             ElMessage.success('登录成功！')             
+             user.isVisable=false
+             const redirect=$route.query.redirect as string
+             ElMessage.success('登录成功！')  
+             if(redirect){
+                $router.push(redirect)
+             }else{
+                $router.push('/home')
+             }
+             
+                        
             } catch (error) {
                 ElMessage.error('错误，获取验证码失败')
             }finally{

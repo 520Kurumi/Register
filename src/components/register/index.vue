@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {Edit,Delete} from '@element-plus/icons-vue'
 import {MdedicalInfo} from '@/api/user/type'
+import { ref } from 'vue';
 interface Props{
   item:MdedicalInfo,
   index:number,
@@ -9,11 +10,18 @@ interface Props{
 }
 defineProps<Props>()
 
-const emits= defineEmits(['goSelect'])
-
-  const select=(index:number)=>{
+const emits= defineEmits(['goSelect','changeVistor','deleteVistor'])
+const dialogVisible=ref<boolean>(false)
+const select=(index:number)=>{
       emits('goSelect',index)
-  }
+}
+const change=(item:MdedicalInfo)=>{
+  emits('changeVistor',item)
+}
+const deleteData=(id:number)=>{
+  dialogVisible.value=false
+  emits('deleteVistor',id)
+}
 
 </script>
 
@@ -27,8 +35,8 @@ const emits= defineEmits(['goSelect'])
            <span class="name">{{item.name}}</span>
         </div>
         <div class="button">
-             <el-button type="primary" :icon="Edit" circle />
-             <el-button type="danger" v-if="isDeleteIcon===true" :icon="Delete" circle></el-button>
+             <el-button type="primary" :icon="Edit" circle  @click="change(item)"/>
+             <el-button type="danger" v-if="isDeleteIcon===true" :icon="Delete" circle @click="dialogVisible=true"></el-button>
         </div>
 
       </div>
@@ -42,14 +50,28 @@ const emits= defineEmits(['goSelect'])
           <li>出生日期：{{ item.birthdate }}</li>
           <li>手机号码：{{ item.phone }}</li>
           <li>婚姻状况：{{ item.isMarry===1?'已婚':'未婚' }}</li>
-          <li>当前住址：{{ item.param.cityString }}</li>
-          <li>详细地址：{{ item.param.fullAddress }}</li>
+          <li>当前住址：{{ item.param.cityString }}</li> 
+          <li>详细地址：{{ item.param.fullAddress }}</li> 
         </ul>
     </template>
   </el-card>
   <div class="select" v-if="index==currentIndex">已选择</div>
  </div>
-
+  <el-dialog
+      v-model="dialogVisible"
+      width="30%"
+      title="请确认操作"
+    >
+    <h2>是否确认删除</h2>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="deleteData(item.id)">
+          确定
+        </el-button>
+      </span>
+    </template>
+    </el-dialog>
 </template>
 
 <style scoped lang="scss">

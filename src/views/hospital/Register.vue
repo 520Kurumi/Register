@@ -53,12 +53,12 @@ const book=()=>{
         <template #header>
         <div class="card-header">
             <span>请点击选择就诊人</span>
-            <el-button class="button" type="success" :icon="User">添加就诊人</el-button>
+            <el-button class="button" type="success" :icon="User" @click="">添加就诊人</el-button>
         </div>
         </template>
         <template #default>
             <div class="register">
-                 <Register v-for="(item,index) in patient" :key="item.id"  :item="item" :index="index" @goSelect="goSelect" :currentIndex="currentIndex"></Register>
+                 <Register v-for="(item,index) in patient" :key="item.id" :isDeleteIcon="false" :item="item" :index="index" @goSelect="goSelect" :currentIndex="currentIndex"></Register>
             </div>
         </template>
   </el-card>

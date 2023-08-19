@@ -1,7 +1,8 @@
 import request from "@/utils/request";
 import {PhoneCodeResponseData,PostUserLoginRequestData, QRCodeResponseData,
     MdedicalInfoResponseData,ScheduleInfoResponseData,OrderIdResponseData,OrderInfoResponseData,QRCodeImgResponseData,
-    QRCodeImgStatusResponseData,UserInfoResponseData,UserParams,UserOrderResponseData,OrderStatusResponseData} from './type'
+    QRCodeImgStatusResponseData,UserInfoResponseData,UserParams,UserOrderResponseData,OrderStatusResponseData,
+    ReqVistor} from './type'
 
 enum API{
     USERLOGINURL='/sms/send/',
@@ -17,7 +18,11 @@ enum API{
     getUSERINFO_URL='/user/auth/getUserInfo',
     postIDENTIFY_URL='/user/auth/userAuah',
     getUSERORDER_URL='/order/orderInfo/auth/', //用于得到登录用户订单信息
-    getORDERSTATUS_URL='/order/orderInfo/auth/getStatusList' //用于得到订单状态
+    getORDERSTATUS_URL='/order/orderInfo/auth/getStatusList', //用于得到订单状态
+    getCITY_URL='/cmn/dict/findByParentId/',   //用于级联选择城市
+    postADDVISTOR_URL='/user/patient/auth/save', //新增就诊人
+    putMODIFYVISTOR_URL='/user/patient/auth/update', //修改就诊人
+    deleteVISTOR_URL='/user/patient/auth/remove/'  //删除就诊人
 }
 
 export const getPhoneCode=(phone:string)=>{ //输入手机号返回手机验证码
@@ -76,6 +81,21 @@ export const getUserOrder=(page:number,limit:number,patientId:string,orderStatus
 
 export const getorderStatus=()=>{
     return request.get<any,{data:OrderStatusResponseData}>(API.getORDERSTATUS_URL)
+}
+
+export const getCity=(parentId:string)=>{
+    return request.get(API.getCITY_URL+parentId)
+}
+
+export const reqVistor=(data:ReqVistor)=>{
+    if(data.id){
+        return request.put(API.putMODIFYVISTOR_URL,data)
+    }
+    return request.post(API.postADDVISTOR_URL,data)
+}
+
+export const deleteVistor=(id:number)=>{
+  return request.delete(API.deleteVISTOR_URL+id)
 }
   
 

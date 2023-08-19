@@ -20,7 +20,7 @@ const logout=()=>{
         <div class="wraper">
             <div class="head" @click="$router.push('/home')">
                 <img src="../../assets/images/logo.png">
-                <span>好大夫 预约挂号统一平台</span>
+                <span>好大夫 预约挂号平台</span>
             </div>
             <div class="blank"></div>
         </div>
@@ -37,8 +37,8 @@ const logout=()=>{
                 <template #dropdown>
                 <el-dropdown-menu>
                     <el-dropdown-item @click="$router.push('/user/identify')">实名认证</el-dropdown-item>
-                    <el-dropdown-item>挂号订单</el-dropdown-item>
-                    <el-dropdown-item>就诊人管理</el-dropdown-item>
+                    <el-dropdown-item @click="$router.push('/user/order')">挂号订单</el-dropdown-item>
+                    <el-dropdown-item @click="$router.push('/user/vistor')">就诊人管理</el-dropdown-item>
                     <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
                 </template>
