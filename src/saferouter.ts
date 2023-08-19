@@ -8,6 +8,7 @@ const userStore = useUserStore(pinia);
 
 //存储用户未登录可以访问路由得路径
 const whiteList = ["/home", '/hospital/required', '/hospital/detail', '/hospital/book', '/hospital/info', '/hospital/search'];
+//@ts-ignore
 router.beforeEach((to:any,from:any,next:any)=>{
    const token= userStore.nameAndToken.token
    if(token){
