@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite --open",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:staging": "vite dev --mode staging",
+    "build:staging": "vite build --mode staging",
+    "build-only-staging": "vite build --mode staging"
+
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",

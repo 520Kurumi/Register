@@ -1,1 +1,0 @@
-import{g as o,m as n,L as s,o as r,c}from"./index-e9f8ae92.js";const p=o({__name:"index",setup(a){const e=n();s(e.query);const t=document.querySelector("html");return t.style.display="none",(m,u)=>(r(),c("div"))}});export{p as default};

@@ -2,8 +2,16 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus';
 import {start,stop} from './serviceHelp'
 import {useUserStore} from '@/store/user/user'
+//以下新增
+let baseURL = ''
+if(import.meta.env.MODE === 'staging') { // 预备模式
+    baseURL = process.env.NODE_ENV === 'development' ? import.meta.env.VITE_DEV_SERVER : import.meta.env.VITE_SERVER
+} else { // development或production模式
+    baseURL = ''
+}
+//
 const request= axios.create({
-    baseURL:'/api',
+    baseURL:baseURL+'/api',
     timeout:10000
 })
 request.interceptors.request.use(function (config) {
